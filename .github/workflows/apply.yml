@@ -18,8 +18,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 'Change to infra directory'
-        run: cd infra
         
       - name: 'Checkout code'
         uses: actions/checkout@v2
