@@ -144,3 +144,23 @@ aws s3 cp path/to/index.html s3://dev.eksops.site/index.html
 Pour automatiser cette étape lors des prochains déploiements, il est recommandé d'utiliser un script ou une commande `aws s3 sync` pour uploader tous les fichiers statiques nécessaires.
 
 *Ce fichier README permet de garder une trace claire de l'état initial de l'infrastructure et de faciliter la reprise ou la révision du projet ultérieurement.* 
+
+---
+
+## Pipelines CI/CD GitHub Actions
+
+Trois workflows automatisent la gestion de l’infrastructure et le déploiement de l’application front-end :
+
+### 1. `apply.yml` — Provisionnement de l’infrastructure
+Ce pipeline permet de déployer ou mettre à jour l’infrastructure AWS via Terraform. Il propose le choix de l’environnement (`dev` ou `prod`) et exécute toutes les étapes nécessaires : initialisation, sélection/création du workspace, validation, planification et application des changements.
+
+### 2. `deploy.yml` — Déploiement du front-end sur S3
+Ce pipeline permet de déployer automatiquement le contenu du dossier `front-end` dans le bucket S3 correspondant à l’environnement choisi (`dev.eksops.site` ou `prod.eksops.site`). Il s’utilise après la création de l’infrastructure pour mettre à jour le site statique.
+
+### 3. `destroy.yml` — Suppression de l’infrastructure
+Ce pipeline permet de détruire toute l’infrastructure provisionnée par Terraform pour l’environnement sélectionné. Il est utile pour nettoyer complètement un environnement (`dev` ou `prod`).
+
+**Utilisation :**
+- Les trois workflows sont déclenchables manuellement depuis l’onglet “Actions” de GitHub.
+- À chaque lancement, il faut choisir l’environnement cible (`dev` ou `prod`).
+- Les identifiants AWS doivent être configurés dans les secrets du dépôt GitHub. 
