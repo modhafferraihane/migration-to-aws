@@ -18,6 +18,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: 'Change to infra directory'
+        run: cd infra
+        
       - name: 'Checkout code'
         uses: actions/checkout@v2
 
@@ -35,15 +38,20 @@ jobs:
 
       - name: 'Terraform Init'
         run: terraform init
+        working-directory: infra
 
       - name: 'Set workspace or create if not exists'
         run: terraform workspace select ${{ inputs.environment }}  || terraform workspace new ${{ inputs.environment }} 
-        
+        working-directory: infra
+
       - name: 'Terraform Validate'
         run: terraform validate
+        working-directory: infra
 
       - name: 'Terraform Plan'
         run: terraform plan
+        working-directory: infra
 
       - name: 'Terraform Apply'
         run: terraform apply -auto-approve
+        working-directory: infra
