@@ -19,10 +19,10 @@ jobs:
 
     steps:
       - name: 'Checkout code'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: 'Set up Terraform'
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.12.2
 
@@ -34,16 +34,21 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: 'Terraform Init'
+        working-directory: infra
         run: terraform init
-
+        
       - name: 'Set workspace or create if not exists'
+        working-directory: infra
         run: terraform workspace select ${{ inputs.environment }}  || terraform workspace new ${{ inputs.environment }} 
-
+        
       - name: 'Terraform Validate'
+        working-directory: infra
         run: terraform validate
-
+        
       - name: 'Terraform Plan -destroy'
+        working-directory: infra
         run: terraform plan -destroy
 
       - name: 'Terraform Destroy'
+        working-directory: infra
         run: terraform destroy -auto-approve
