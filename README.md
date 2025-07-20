@@ -164,3 +164,11 @@ Ce pipeline permet de détruire toute l’infrastructure provisionnée par Terra
 - Les trois workflows sont déclenchables manuellement depuis l’onglet “Actions” de GitHub.
 - À chaque lancement, il faut choisir l’environnement cible (`dev` ou `prod`).
 - Les identifiants AWS doivent être configurés dans les secrets du dépôt GitHub. 
+
+---
+
+## Aperçu du site en production
+
+Voici une capture d'écran du site en fonctionnement :
+
+![Aperçu du site en marche](pic/site.PNG) 
