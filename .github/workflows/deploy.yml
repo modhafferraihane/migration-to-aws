@@ -38,13 +38,21 @@ jobs:
 
       - name: Show workspace and front-end files
         run: |
-          echo "Working directory:"
-          pwd
-          echo "Repo root files:"
-          ls -la
-          echo "Check front-end directory variants:"
-          ls -la front-end || ls -la frontend || true
+          echo "Working directory:"; pwd
+          echo "Repo root files:"; ls -la
+          echo "Check front-end directory variants:"; ls -la front-end || ls -la frontend || true
 
-      - name: Sync front-end to S3
+      - name: Sync front-end to S3 (debug)
+        env:
+          BUCKET: ${{ github.event.inputs.environment }}.eksops.site
         run: |
-          aws s3 sync front-end/ s3://${{ github.event.inputs.environment }}.eksops.site --delete
+          set -x
+          echo "AWS CLI:"; aws --version
+          echo "Check local front-end content:"; ls -la front-end || { echo "front-end not found"; exit 1; }
+          # test upload d'un fichier pour voir les logs
+          aws s3 cp front-end/index.html s3://$BUCKET/index.html --acl public-read || true
+          # sync (utilise --exact-timestamps pour éviter les skip inattendus)
+          aws s3 sync front-end/ s3://$BUCKET --delete --exact-timestamps --acl public-read
+          echo "Exit code du sync: $?"
+          echo "Contenu du bucket après sync (récursif):"
+          aws s3 ls s3://$BUCKET --recursive || true
