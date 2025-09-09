@@ -27,6 +27,24 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+      - name: Debug AWS identity and S3
+        run: |
+          echo "Caller identity:"
+          aws sts get-caller-identity
+          echo "List buckets:"
+          aws s3 ls
+          echo "List target bucket (if exists):"
+          aws s3 ls s3://${{ github.event.inputs.environment }}.eksops.site || true
+
+      - name: Show workspace and front-end files
+        run: |
+          echo "Working directory:"
+          pwd
+          echo "Repo root files:"
+          ls -la
+          echo "Check front-end directory variants:"
+          ls -la front-end || ls -la frontend || true
+          
       - name: Sync front-end to S3
         run: |
           aws s3 sync front-end/ s3://${{ github.event.inputs.environment }}.eksops.site --delete
